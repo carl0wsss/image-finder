@@ -3,11 +3,15 @@ import requests
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
-UNSPLASH_KEY = os.getenv("UNSPLASH_ACCESS_KEY")
-PEXELS_KEY = os.getenv("PEXELS_ACCESS_KEY")
-PIXABAY_KEY = os.getenv("PIXABAY_ACCESS_KEY")
-
+try:
+    UNSPLASH_KEY = st.secrets["UNSPLASH_ACCESS_KEY"]
+    PEXELS_KEY = st.secrets["PEXELS_ACCESS_KEY"]
+    PIXABAY_KEY = st.secrets["PIXABAY_ACCESS_KEY"]
+except:
+    UNSPLASH_KEY = os.getenv("UNSPLASH_ACCESS_KEY")
+    PEXELS_KEY = os.getenv("PEXELS_ACCESS_KEY")
+    PIXABAY_KEY = os.getenv("PIXABAY_ACCESS_KEY")
+    
 PHOTOS_PAR_SOURCE = 9
 
 def search_unsplash(query, page, orientation, couleur, tri):
