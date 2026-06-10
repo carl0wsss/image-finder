@@ -74,19 +74,23 @@ def search_pixabay(query, page, orientation, tri, taille):
     return photos, total_pages
 
 def search_openverse(query, page, orientation, taille):
-    orientations = {"Landscape": "landscape", "Portrait": "portrait", "Square": "square"}
-    tailles = {"Small": "small", "Medium": "medium", "Large": "large"}
-    params = {"q": query, "page_size": PHOTOS_PAR_SOURCE, "page": page}
-    if orientation != "ALL":
-        params["aspect_ratio"] = orientations[orientation]
-    if taille != "ALL":
-        params["size"] = tailles[taille]
-    response = requests.get("https://api.openverse.org/v1/images/", params=params)
-    data = response.json()
-    total = data.get("count", 0)
-    total_pages = (total // PHOTOS_PAR_SOURCE) + 1
-    photos = [{"url": p["thumbnail"], "link": p["foreign_landing_url"], "source": "Openverse"} for p in data["results"]]
-    return photos, total_pages
+    try:
+        orientations = {"Landscape": "landscape", "Portrait": "portrait", "Square": "square"}
+        tailles = {"Small": "small", "Medium": "medium", "Large": "large"}
+        params = {"q": query, "page_size": PHOTOS_PAR_SOURCE, "page": page}
+        if orientation != "ALL":
+            params["aspect_ratio"] = orientations[orientation]
+        if taille != "ALL":
+            params["size"] = tailles[taille]
+        response = requests.get("https://api.openverse.org/v1/images/", params=params)
+        data = response.json()
+        total = data.get("count", 0)
+        total_pages = (total // PHOTOS_PAR_SOURCE) + 1
+        results = data.get("results", [])
+        photos = [{"url": p["thumbnail"], "link": p["foreign_landing_url"], "source": "Openverse"} for p in results if p.get("thumbnail")]
+        return photos, total_pages
+    except:
+        return [], 1
 
 def search_wikimedia(query, page):
     try:
